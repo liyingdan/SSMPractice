@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/mvc
+	    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--开启注解-->
+    <context:component-scan base-package="com.lyd"/>
+    <!--加载静态文件-->
+    <mvc:default-servlet-handler/>
+
+    <mvc:view-controller path="textView" view-name="/result.jsp"/>
+    <mvc:annotation-driven/>
+
+    <!--访问静态资源-->
+    <!--<mvc:resources location="/images/" mapping="/images/**"/>-->
+    <mvc:resources location="/js/" mapping="/js/**"/>
+
+
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--配置上传文件信息-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--设置字符集编码-->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--设置最大上传容量-->
+        <property name="maxUploadSize" value="5024000"/>
+    </bean>
+
+    <!--语言国际化-->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="language"/>
+     </bean>
+
+    <!--配置session本地解析器-->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="language"/>
+        </bean>
+        <!--自定义拦截器-->
+        <bean class="com.lyd.Intercepter.MyFirstInterceptor"/>
+
+        <!--拦截指定请求-->
+       <!-- <mvc:interceptor>
+            <mvc:mapping path="/local"/>
+            <bean class="com.lyd.Intercepter.MyFirstInterceptor"/>
+        </mvc:interceptor>-->
+
+        <bean class="com.lyd.Intercepter.MySecondIntercepter"/>
+
+    </mvc:interceptors>
+
+
+</beans>

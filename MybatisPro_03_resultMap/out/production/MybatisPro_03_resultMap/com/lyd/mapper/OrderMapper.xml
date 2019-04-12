@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyd.mapper.OrderMapper">
+
+    <!--左连接查询-->
+ <!--   <resultMap id="OrderMap" type="Order">
+        &lt;!&ndash;字段和数据库一致可省略&ndash;&gt;
+        <id property="order_id" column="order_id"/>
+        <result property="order_name" column="order_name"/>
+        <result property="order_num" column="order_num"/>
+        <result property="customer.cust_id" column="cust_id"/>
+        <result property="customer.cust_name" column="cust_name"/>
+        <result property="customer.cust_phone" column="cust_phone"/>
+        <result property="customer.cust_profession" column="cust_profession"/>
+        <result property="customer.email" column="email"/>
+    </resultMap>-->
+    <resultMap id="OrderMap" type="Order">
+        <!--所有字段都得自己写 不会自动映射-->
+        <id property="order_id" column="order_id"/>
+        <result property="order_name" column="order_name"/>
+        <result property="order_num" column="order_num"/>
+      <association property="customer" javaType="Customer">
+          <id property="cust_id" column="cust_id"/>
+          <result property="cust_name" column="cust_name"/>
+          <result property="cust_phone" column="cust_phone"/>
+          <result property="cust_profession" column="cust_profession"/>
+          <result property="email" column="email"/>
+      </association>
+    </resultMap>
+    <select id="getAllOrders" resultMap="OrderMap">
+        SELECT * FROM `order` AS o LEFT JOIN customer c ON o.cust_id = c.cust_id
+    </select>
+
+
+
+    <!--分布查询-->
+    <resultMap id="resultMap2" type="Order">
+        <id property="order_id" column="order_id"/>
+        <result property="order_name" column="order_name"/>
+        <result property="order_num" column="order_num"/>
+        <association property="customer" javaType="Customer"
+                     select="com.lyd.mapper.CustomerMapper.getCustomerWithId"
+                     column="cust_id">
+        </association>
+    </resultMap>
+    <select id="getOrderWithId" resultMap="resultMap2">
+        select * from `order` where order_id = #{id}
+    </select>
+
+    <!--保存订单-->
+    <insert id="insertOrder" parameterType="Order" useGeneratedKeys="true" keyColumn="order_id" keyProperty="order_id">
+        insert into `order`(order_name,order_num,cust_id) values(#{order_name},#{order_num},#{customer.cust_id})
+    </insert>
+
+    <!--更新订单OderId-->
+    <update id="updateOrderId">
+        update `order` set cust_id = #{cust_id} where order_id = #{order_id}
+    </update>
+
+    <select id="getOrderWithCustId" resultType="com.lyd.domain.Order">
+        select * from `order` where cust_id = #{id}
+    </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

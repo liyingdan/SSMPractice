@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--加载配置文件-->
+    <properties resource="db.properties"/>
+
+    <settings>
+        <!--配置sql打印-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!--二级缓存开关-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!--定义别名-->
+    <typeAliases>
+        <!--批量定义别名，别名为类名-->
+        <package name="com.lyd.domain"/>
+    </typeAliases>
+
+    <!--配置分页插件-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
+    <!-- spring整合后 environments配置将废除 使用spring中的连接池 -->
+    <environments default="development">
+        <environment id="development">
+            <!-- 使用jdbc事务管理 -->
+            <transactionManager type="JDBC" />
+            <!-- 数据库连接池 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}" />
+                <property name="url" value="${jdbc.url}" />
+                <property name="username" value="${jdbc.username}" />
+                <property name="password" value="${jdbc.password}" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--加载映射文件-->
+    <mappers>
+        <!--<mapper resource="com/lyd/domain/Customer.xml"></mapper>-->
+        <!--
+        1.名称必须得要和接口名称一致
+        2.必须得要和mapper接口在同一目录
+        -->
+        <package name="com.lyd.mapper"/>
+    </mappers>
+
+</configuration>
